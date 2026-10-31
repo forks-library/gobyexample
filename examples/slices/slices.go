@@ -1,19 +1,31 @@
-// _Slices_ are a key data type in Go, giving a more
-// powerful interface to sequences than arrays.
+// _Slices_ are an important data type in Go, giving
+// a more powerful interface to sequences than arrays.
 
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"slices"
+)
 
 func main() {
 
 	// Unlike arrays, slices are typed only by the
 	// elements they contain (not the number of elements).
-	// To create an empty slice with non-zero length, use
+	// An uninitialized slice equals to nil and has
+	// length 0.
+	var s []string
+	fmt.Println("uninit:", s, s == nil, len(s) == 0)
+
+	// To create a slice with non-zero length, use
 	// the builtin `make`. Here we make a slice of
 	// `string`s of length `3` (initially zero-valued).
-	s := make([]string, 3)
-	fmt.Println("emp:", s)
+	// By default a new slice's capacity is equal to its
+	// length; if we know the slice is going to grow ahead
+	// of time, it's possible to pass a capacity explicitly
+	// as an additional parameter to `make`.
+	s = make([]string, 3)
+	fmt.Println("emp:", s, "len:", len(s), "cap:", cap(s))
 
 	// We can set and get just like with arrays.
 	s[0] = "a"
@@ -61,14 +73,21 @@ func main() {
 	t := []string{"g", "h", "i"}
 	fmt.Println("dcl:", t)
 
+	// The `slices` package contains a number of useful
+	// utility functions for slices.
+	t2 := []string{"g", "h", "i"}
+	if slices.Equal(t, t2) {
+		fmt.Println("t == t2")
+	}
+
 	// Slices can be composed into multi-dimensional data
 	// structures. The length of the inner slices can
 	// vary, unlike with multi-dimensional arrays.
 	twoD := make([][]int, 3)
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		innerLen := i + 1
 		twoD[i] = make([]int, innerLen)
-		for j := 0; j < innerLen; j++ {
+		for j := range innerLen {
 			twoD[i][j] = i + j
 		}
 	}

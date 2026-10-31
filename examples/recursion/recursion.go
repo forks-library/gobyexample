@@ -1,5 +1,5 @@
 // Go supports
-// <a href="http://en.wikipedia.org/wiki/Recursion_(computer_science)"><em>recursive functions</em></a>.
+// <a href="https://en.wikipedia.org/wiki/Recursion_(computer_science)"><em>recursive functions</em></a>.
 // Here's a classic example.
 
 package main
@@ -18,19 +18,19 @@ func fact(n int) int {
 func main() {
 	fmt.Println(fact(7))
 
-	// Closures can also be recursive, but this requires the
-	// closure to be declared with a typed `var` explicitly
-	// before it's defined.
+	// Anonymous functions can also be recursive, but this requires
+	// explicitly declaring a variable with `var` to store
+	// the function before it's defined.
 	var fib func(n int) int
 
 	fib = func(n int) int {
 		if n < 2 {
 			return n
 		}
-		return fib(n-1) + fib(n-2)
 
 		// Since `fib` was previously declared in `main`, Go
 		// knows which function to call with `fib` here.
+		return fib(n-1) + fib(n-2)
 	}
 
 	fmt.Println(fib(7))

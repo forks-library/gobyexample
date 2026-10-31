@@ -1,4 +1,4 @@
-// [_Rate limiting_](http://en.wikipedia.org/wiki/Rate_limiting)
+// [_Rate limiting_](https://en.wikipedia.org/wiki/Rate_limiting)
 // is an important mechanism for controlling resource
 // utilization and maintaining quality of service. Go
 // elegantly supports rate limiting with goroutines,
@@ -44,7 +44,7 @@ func main() {
 	burstyLimiter := make(chan time.Time, 3)
 
 	// Fill up the channel to represent allowed bursting.
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		burstyLimiter <- time.Now()
 	}
 

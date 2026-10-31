@@ -1,4 +1,4 @@
-// [_Variadic functions_](http://en.wikipedia.org/wiki/Variadic_function)
+// [_Variadic functions_](https://en.wikipedia.org/wiki/Variadic_function)
 // can be called with any number of trailing arguments.
 // For example, `fmt.Println` is a common variadic
 // function.
@@ -12,6 +12,9 @@ import "fmt"
 func sum(nums ...int) {
 	fmt.Print(nums, " ")
 	total := 0
+	// Within the function, the type of `nums` is
+	// equivalent to `[]int`. We can call `len(nums)`,
+	// iterate over it with `range`, etc.
 	for _, num := range nums {
 		total += num
 	}

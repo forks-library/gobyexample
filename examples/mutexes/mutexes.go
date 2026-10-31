@@ -1,6 +1,6 @@
 // In the previous example we saw how to manage simple
 // counter state using [atomic operations](atomic-counters).
-// For more complex state we can use a [_mutex_](http://en.wikipedia.org/wiki/Mutual_exclusion)
+// For more complex state we can use a [_mutex_](https://en.wikipedia.org/wiki/Mutual_exclusion)
 // to safely access data across multiple goroutines.
 
 package main
@@ -42,21 +42,27 @@ func main() {
 	// This function increments a named counter
 	// in a loop.
 	doIncrement := func(name string, n int) {
-		for i := 0; i < n; i++ {
+		for range n {
 			c.inc(name)
 		}
-		wg.Done()
 	}
 
 	// Run several goroutines concurrently; note
 	// that they all access the same `Container`,
 	// and two of them access the same counter.
-	wg.Add(3)
-	go doIncrement("a", 10000)
-	go doIncrement("a", 10000)
-	go doIncrement("b", 10000)
+	wg.Go(func() {
+		doIncrement("a", 10000)
+	})
 
-	// Wait a for the goroutines to finish
+	wg.Go(func() {
+		doIncrement("a", 10000)
+	})
+
+	wg.Go(func() {
+		doIncrement("b", 10000)
+	})
+
+	// Wait for the goroutines to finish
 	wg.Wait()
 	fmt.Println(c.counters)
 }

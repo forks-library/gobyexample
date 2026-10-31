@@ -5,9 +5,10 @@
 package main
 
 import (
-	"encoding/json"
+	"bytes"
+	"encoding/json/v2"
 	"fmt"
-	"os"
+	"strings"
 )
 
 // We'll use these two structs to demonstrate encoding and
@@ -78,12 +79,15 @@ func main() {
 
 	// We need to provide a variable where the JSON
 	// package can put the decoded data. This
-	// `map[string]interface{}` will hold a map of strings
+	// `map[string]any` will hold a map of strings
 	// to arbitrary data types.
-	var dat map[string]interface{}
+	var dat map[string]any
 
 	// Here's the actual decoding, and a check for
 	// associated errors.
+	// For the sake of brevity we ignore the errors in
+	// these examples; in real code, you should always check
+	// for errors and act upon them.
 	if err := json.Unmarshal(byt, &dat); err != nil {
 		panic(err)
 	}
@@ -98,7 +102,7 @@ func main() {
 
 	// Accessing nested data requires a series of
 	// conversions.
-	strs := dat["strs"].([]interface{})
+	strs := dat["strs"].([]any)
 	str1 := strs[0].(string)
 	fmt.Println(str1)
 
@@ -109,16 +113,23 @@ func main() {
 	// data.
 	str := `{"page": 1, "fruits": ["apple", "peach"]}`
 	res := response2{}
-	json.Unmarshal([]byte(str), &res)
+	_ = json.Unmarshal([]byte(str), &res)
 	fmt.Println(res)
 	fmt.Println(res.Fruits[0])
 
 	// In the examples above we always used bytes and
 	// strings as intermediates between the data and
 	// JSON representation on standard out. We can also
-	// stream JSON encodings directly to `os.Writer`s like
+	// stream JSON encodings directly to `io.Writer`s like
 	// `os.Stdout` or even HTTP response bodies.
-	enc := json.NewEncoder(os.Stdout)
 	d := map[string]int{"apple": 5, "lettuce": 7}
-	enc.Encode(d)
+	var buf bytes.Buffer
+	_ = json.MarshalWrite(&buf, d)
+	fmt.Println(buf.String())
+
+	// Streaming reads from `io.Reader`s like `os.Stdin`
+	// or HTTP request bodies is done with `json.UnmarshalRead`.
+	res1 := response2{}
+	_ = json.UnmarshalRead(strings.NewReader(str), &res1)
+	fmt.Println(res1)
 }
